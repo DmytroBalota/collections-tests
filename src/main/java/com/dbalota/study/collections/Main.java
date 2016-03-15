@@ -1,5 +1,11 @@
 package com.dbalota.study.collections;
 
+import com.google.common.collect.*;
+import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntSortedMap;
+import it.unimi.dsi.fastutil.ints.Int2IntSortedMaps;
+
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
@@ -107,6 +113,41 @@ public class Main {
         for (Collection c : collections) {
             System.out.print(String.format("\t %s) %s", index++, testMultiThread.iterateElements(c, COLLECTION_SIZE_IN_MULTY_THREADS) / 1000000));
         }
+
+        System.out.println("\n======================THIRD PARTY LIBRARIES=============================");
+
+        //guava
+        MapsTests mapsTests = new MapsTestsSingleThread();
+        List<Map> maps = new ArrayList<Map>();
+        maps.add(HashBiMap.create());
+        maps.add(new Int2IntAVLTreeMap());
+        maps.add(new Int2IntOpenHashMap());
+
+        System.out.println("\n=================SINGLE THREAD================");
+        index = 0;
+        for (Map m : maps) {
+            System.out.print(String.format("\t %s) %s", index++, m.getClass().getName()));
+        }
+
+        System.out.println(String.format("\nAdding %s elements: (milliseconds)", COLLECTION_SIZE));
+        index = 0;
+        for (Map m : maps) {
+            System.out.print(String.format("\t %s) %s", index++, mapsTests.addTest(m, COLLECTION_SIZE) / 1000000));
+        }
+
+        System.out.println("\nRemoving element: (nanoseconds)");
+        index = 0;
+        for (Map m : maps) {
+            System.out.print(String.format("\t %s) %s", index++, mapsTests.removeTest(m, COLLECTION_SIZE >> 1)));
+        }
+
+
+        System.out.println("\nContains element: (nanoseconds)");
+        index = 0;
+        for (Map m : maps) {
+            System.out.print(String.format("\t %s) %s", index++, mapsTests.containsTest(m, COLLECTION_SIZE - 1)));
+        }
+
     }
 
 
